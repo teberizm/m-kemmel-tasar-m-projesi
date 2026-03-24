@@ -20,6 +20,7 @@ export interface WorkoutEntry {
   timestamp: string;
   durationMinutes: number;
   caloriesBurned: number;
+  note?: string;
 }
 
 export interface SleepEntry {
@@ -29,6 +30,7 @@ export interface SleepEntry {
   wakeTime: string;
   totalMinutes: number;
   timestamp: string;
+  note?: string;
 }
 
 export interface WaterEntry {
