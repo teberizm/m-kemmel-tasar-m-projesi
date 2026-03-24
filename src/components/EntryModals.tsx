@@ -117,13 +117,14 @@ function WaterForm({ onAdd, onClose }: { onAdd: (e: WaterEntry) => void; onClose
 function SleepForm({ onAdd, onClose }: { onAdd: (e: SleepEntry) => void; onClose: () => void }) {
   const [sleepTime, setSleepTime] = useState('23:00');
   const [wakeTime, setWakeTime] = useState('07:00');
+  const [note, setNote] = useState('');
 
   const submit = () => {
     const [sh, sm] = sleepTime.split(':').map(Number);
     const [wh, wm] = wakeTime.split(':').map(Number);
     let totalMin = (wh * 60 + wm) - (sh * 60 + sm);
     if (totalMin < 0) totalMin += 24 * 60;
-    onAdd({ id: uid(), type: 'sleep', sleepTime, wakeTime, totalMinutes: totalMin, timestamp: new Date().toISOString() });
+    onAdd({ id: uid(), type: 'sleep', sleepTime, wakeTime, totalMinutes: totalMin, timestamp: new Date().toISOString(), note: note || undefined });
     onClose();
   };
 
@@ -139,6 +140,7 @@ function SleepForm({ onAdd, onClose }: { onAdd: (e: SleepEntry) => void; onClose
           <Input type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} />
         </div>
       </div>
+      <Input placeholder="Not ekle (opsiyonel)" value={note} onChange={e => setNote(e.target.value)} />
       <Button onClick={submit} className="w-full bg-sleep hover:bg-sleep/90 text-primary-foreground">Uyku Kaydet</Button>
     </div>
   );
@@ -147,6 +149,7 @@ function SleepForm({ onAdd, onClose }: { onAdd: (e: SleepEntry) => void; onClose
 function WorkoutForm({ onAdd, onClose }: { onAdd: (e: WorkoutEntry) => void; onClose: () => void }) {
   const [workoutType, setWorkoutType] = useState<WorkoutType>('walking');
   const [duration, setDuration] = useState('30');
+  const [note, setNote] = useState('');
   const { settings } = useSettings();
 
   const types: { key: WorkoutType; label: string }[] = [
@@ -160,7 +163,7 @@ function WorkoutForm({ onAdd, onClose }: { onAdd: (e: WorkoutEntry) => void; onC
   const submit = () => {
     const dur = Number(duration);
     const cal = Math.round(MET_VALUES[workoutType] * settings.startingWeight * (dur / 60));
-    onAdd({ id: uid(), type: 'workout', workoutType, durationMinutes: dur, caloriesBurned: cal, timestamp: new Date().toISOString() });
+    onAdd({ id: uid(), type: 'workout', workoutType, durationMinutes: dur, caloriesBurned: cal, timestamp: new Date().toISOString(), note: note || undefined });
     onClose();
   };
 
@@ -183,6 +186,7 @@ function WorkoutForm({ onAdd, onClose }: { onAdd: (e: WorkoutEntry) => void; onC
         <Label className="text-xs text-muted-foreground">Süre (dakika)</Label>
         <Input type="number" value={duration} onChange={e => setDuration(e.target.value)} />
       </div>
+      <Input placeholder="Not ekle (opsiyonel)" value={note} onChange={e => setNote(e.target.value)} />
       <Button onClick={submit} className="w-full bg-workout hover:bg-workout/90 text-primary-foreground">Egzersiz Ekle</Button>
     </div>
   );

@@ -65,6 +65,7 @@ function WorkoutCard({ entry }: { entry: WorkoutEntry }) {
         <p className="font-semibold text-sm text-foreground">{workoutLabels[entry.workoutType]}</p>
         <TimeLabel timestamp={entry.timestamp} />
         <p className="text-xs text-muted-foreground">{entry.durationMinutes}dk · {entry.caloriesBurned} kcal</p>
+        {entry.note && <p className="text-xs text-muted-foreground mt-0.5 italic">📝 {entry.note}</p>}
       </div>
     </div>
   );
@@ -82,6 +83,7 @@ function SleepCard({ entry }: { entry: SleepEntry }) {
         <p className="font-semibold text-sm text-foreground">Uyku</p>
         <p className="text-xs text-muted-foreground">{entry.sleepTime} → {entry.wakeTime}</p>
         <p className="text-xs font-medium text-foreground">{h}s {m}dk uyudunuz</p>
+        {entry.note && <p className="text-xs text-muted-foreground mt-0.5 italic">📝 {entry.note}</p>}
       </div>
     </div>
   );
