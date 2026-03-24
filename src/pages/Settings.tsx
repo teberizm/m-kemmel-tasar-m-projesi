@@ -8,6 +8,24 @@ import { ArrowLeft, Plus, Trash2, Link2, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
+function DietitianLinkButton() {
+  const [copied, setCopied] = useState(false);
+  const link = `${window.location.origin}/dietitian`;
+  const copy = () => {
+    navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div className="flex gap-2">
+      <Input readOnly value={link} className="text-xs" />
+      <Button variant="outline" size="icon" onClick={copy}>
+        {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+      </Button>
+    </div>
+  );
+}
+
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
   const navigate = useNavigate();
