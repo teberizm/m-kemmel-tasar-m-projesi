@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Settings from "./pages/Settings";
 import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
+import Dietitian from "./pages/Dietitian";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/dietitian" element={<Dietitian />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

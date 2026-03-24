@@ -4,9 +4,27 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { DietPlanItem } from '@/types/health';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Link2, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+
+function DietitianLinkButton() {
+  const [copied, setCopied] = useState(false);
+  const link = `${window.location.origin}/dietitian`;
+  const copy = () => {
+    navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div className="flex gap-2">
+      <Input readOnly value={link} className="text-xs" />
+      <Button variant="outline" size="icon" onClick={copy}>
+        {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+      </Button>
+    </div>
+  );
+}
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
@@ -128,6 +146,16 @@ export default function Settings() {
           <Button onClick={addDietItem} variant="outline" className="w-full gap-2">
             <Plus className="w-4 h-4" /> Ekle
           </Button>
+        </motion.div>
+
+        {/* Dietitian Link */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="bg-card rounded-lg p-5 shadow-card space-y-3">
+          <div className="flex items-center gap-2">
+            <Link2 className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-foreground">Diyetisyen Linki</h2>
+          </div>
+          <p className="text-xs text-muted-foreground">Bu linki diyetisyeninize gönderin. Kayıtlarınızı görebilir ve günlük yorum bırakabilir.</p>
+          <DietitianLinkButton />
         </motion.div>
       </div>
     </div>
