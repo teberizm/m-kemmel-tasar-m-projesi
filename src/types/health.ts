@@ -56,6 +56,7 @@ export interface MealTimeSettings {
 }
 
 export interface UserSettings {
+  fullName: string;
   height: number;
   startingWeight: number;
   targetWeight: number;
@@ -81,6 +82,7 @@ export const MET_VALUES: Record<WorkoutType, number> = {
 };
 
 export const DEFAULT_SETTINGS: UserSettings = {
+  fullName: '',
   height: 175,
   startingWeight: 85,
   targetWeight: 75,

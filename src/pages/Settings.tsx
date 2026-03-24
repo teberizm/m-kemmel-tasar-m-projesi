@@ -56,8 +56,17 @@ export default function Settings() {
           <h1 className="text-xl font-bold text-foreground">Ayarlar</h1>
         </div>
 
+        {/* Name */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-lg p-5 shadow-card space-y-3">
+          <h2 className="font-semibold text-foreground">Kişisel Bilgiler</h2>
+          <div>
+            <Label className="text-xs text-muted-foreground">Ad Soyad</Label>
+            <Input value={settings.fullName} onChange={e => updateSettings({ fullName: e.target.value })} placeholder="Adınızı girin" />
+          </div>
+        </motion.div>
+
         {/* Body Info */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-lg p-5 shadow-card space-y-4">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }} className="bg-card rounded-lg p-5 shadow-card space-y-4">
           <h2 className="font-semibold text-foreground">Vücut Bilgileri</h2>
           <div className="grid grid-cols-3 gap-3">
             <div>
