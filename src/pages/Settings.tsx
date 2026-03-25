@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DietPlanItem } from '@/types/health';
-import { ArrowLeft, Plus, Trash2, Link2, Copy, Check, Save, UtensilsCrossed } from 'lucide-react';
+import { DietPlanItem, Supplement } from '@/types/health';
+import { ArrowLeft, Plus, Trash2, Link2, Copy, Check, Save, UtensilsCrossed, Pill } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -44,6 +44,8 @@ export default function Settings() {
   const [newPlanCategory, setNewPlanCategory] = useState('');
   const [newPlanItem, setNewPlanItem] = useState('');
   const [newPlanAmount, setNewPlanAmount] = useState('');
+  const [newSupName, setNewSupName] = useState('');
+  const [newSupCount, setNewSupCount] = useState('1');
 
   const addDietItem = () => {
     if (!newPlanCategory || !newPlanItem) return;
@@ -56,6 +58,18 @@ export default function Settings() {
 
   const removeDietItem = (id: string) => {
     updateSettings({ dietPlan: settings.dietPlan.filter(i => i.id !== id) });
+  };
+
+  const addSupplement = () => {
+    if (!newSupName.trim()) return;
+    const sup: Supplement = { id: Math.random().toString(36).slice(2), name: newSupName.trim(), dailyCount: Math.max(1, Number(newSupCount) || 1) };
+    updateSettings({ supplements: [...(settings.supplements || []), sup] });
+    setNewSupName('');
+    setNewSupCount('1');
+  };
+
+  const removeSupplement = (id: string) => {
+    updateSettings({ supplements: (settings.supplements || []).filter(s => s.id !== id) });
   };
 
   const handleSave = () => {
@@ -247,7 +261,62 @@ export default function Settings() {
           </div>
         </motion.div>
 
-        {/* Dietitian Link */}
+        {/* Supplements */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="bg-card rounded-lg p-5 shadow-card space-y-4">
+          <div className="flex items-center gap-2">
+            <Pill className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-foreground">Takviye & İlaçlar</h2>
+          </div>
+
+          {(settings.supplements || []).length > 0 && (
+            <div className="space-y-2">
+              <AnimatePresence>
+                {(settings.supplements || []).map(sup => (
+                  <motion.div
+                    key={sup.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    className="flex items-center justify-between bg-secondary/50 rounded-lg px-3 py-2.5 group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Pill className="w-4 h-4 text-primary" />
+                      <span className="text-sm text-foreground">{sup.name}</span>
+                      <span className="text-xs text-muted-foreground bg-background px-2 py-0.5 rounded-full">
+                        Günde {sup.dailyCount} kez
+                      </span>
+                    </div>
+                    <button onClick={() => removeSupplement(sup.id)} className="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded">
+                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                    </button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+
+          <div className="border-t border-border pt-4 space-y-3">
+            <p className="text-xs font-medium text-muted-foreground">Yeni Takviye Ekle</p>
+            <div className="grid grid-cols-3 gap-2">
+              <Input placeholder="Takviye adı" value={newSupName} onChange={e => setNewSupName(e.target.value)} className="col-span-2" />
+              <Select value={newSupCount} onValueChange={setNewSupCount}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1/gün</SelectItem>
+                  <SelectItem value="2">2/gün</SelectItem>
+                  <SelectItem value="3">3/gün</SelectItem>
+                  <SelectItem value="4">4/gün</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={addSupplement} variant="outline" className="w-full gap-2" disabled={!newSupName.trim()}>
+              <Plus className="w-4 h-4" /> Ekle
+            </Button>
+          </div>
+        </motion.div>
+
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="bg-card rounded-lg p-5 shadow-card space-y-3">
           <div className="flex items-center gap-2">
             <Link2 className="w-5 h-5 text-primary" />

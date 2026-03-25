@@ -55,6 +55,12 @@ export interface MealTimeSettings {
   dinner: { start: string; end: string };
 }
 
+export interface Supplement {
+  id: string;
+  name: string;
+  dailyCount: number;
+}
+
 export interface UserSettings {
   fullName: string;
   height: number;
@@ -64,6 +70,7 @@ export interface UserSettings {
   mealTimes: MealTimeSettings;
   dietStartDate: string;
   dietPlan: DietPlanItem[];
+  supplements: Supplement[];
 }
 
 export interface DietPlanItem {
@@ -94,4 +101,5 @@ export const DEFAULT_SETTINGS: UserSettings = {
     dinner: { start: '18:00', end: '21:00' },
   },
   dietPlan: [],
+  supplements: [],
 };

@@ -9,6 +9,8 @@ import Timeline from '@/components/Timeline';
 import EntryModals from '@/components/EntryModals';
 import BottomNav from '@/components/BottomNav';
 import DietitianNotes from '@/components/DietitianNotes';
+import MoodHungerRating from '@/components/MoodHungerRating';
+import SupplementTracker from '@/components/SupplementTracker';
 
 type ModalType = 'meal' | 'water' | 'sleep' | 'workout' | 'weight' | null;
 
@@ -26,6 +28,8 @@ export default function Index() {
         <TopSummary settings={settings} latestWeight={latestWeight} />
         <DayNavigator date={date} onChange={setDate} />
         <QuickActions onAction={setModal} />
+        <MoodHungerRating dateStr={dateStr} />
+        <SupplementTracker supplements={settings.supplements} dateStr={dateStr} />
         <DailyWidgets
           totalWater={totalWater}
           waterGoal={settings.waterGoalMl}
@@ -52,6 +56,8 @@ export default function Index() {
           </div>
         </div>
         <div className="w-80 space-y-4 sticky top-6 self-start">
+          <MoodHungerRating dateStr={dateStr} />
+          <SupplementTracker supplements={settings.supplements} dateStr={dateStr} />
           <DailyWidgets
             totalWater={totalWater}
             waterGoal={settings.waterGoalMl}

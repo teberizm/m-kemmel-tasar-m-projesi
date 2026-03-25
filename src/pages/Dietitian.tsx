@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { TimelineEntry, MealEntry, WorkoutEntry, SleepEntry, WaterEntry, WeightEntry, UserSettings, DEFAULT_SETTINGS, MealType } from '@/types/health';
+import MoodHungerRating from '@/components/MoodHungerRating';
+import SupplementTracker from '@/components/SupplementTracker';
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
@@ -257,6 +259,12 @@ export default function Dietitian() {
             <StatCard icon={Droplets} bg="bg-water-light" iconColor="text-water" title="Su Tüketimi" value={`${(totalWater / 1000).toFixed(1)}L`} sub={`Hedef: ${(settings.waterGoalMl / 1000).toFixed(1)}L`} />
             <StatCard icon={Moon} bg="bg-sleep-light" iconColor="text-sleep" title="Uyku" value={sleepEntry ? `${Math.floor(sleepEntry.totalMinutes / 60)}s ${sleepEntry.totalMinutes % 60}dk` : 'Kayıt yok'} sub={sleepEntry ? `${sleepEntry.sleepTime} → ${sleepEntry.wakeTime}` : undefined} />
             <StatCard icon={Dumbbell} bg="bg-workout-light" iconColor="text-workout" title="Egzersiz" value={totalCal > 0 ? `${totalCal} kcal` : 'Egzersiz yok'} />
+
+            {/* Mood & Hunger */}
+            <MoodHungerRating dateStr={dateStr} readOnly />
+
+            {/* Supplements */}
+            <SupplementTracker supplements={settings.supplements || []} dateStr={dateStr} readOnly />
 
             {/* Meal Status */}
             <div className="bg-card rounded-xl p-5 shadow-card">
