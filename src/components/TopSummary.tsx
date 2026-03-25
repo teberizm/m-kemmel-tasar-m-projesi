@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { UserSettings, WeightEntry } from '@/types/health';
 import { getAllWeights } from '@/hooks/useHealthData';
 import { useMemo } from 'react';
+import { User } from 'lucide-react';
 
 interface Props {
   settings: UserSettings;
@@ -31,9 +32,21 @@ export default function TopSummary({ settings, latestWeight }: Props) {
       animate={{ opacity: 1, y: 0 }}
       className="bg-card rounded-lg p-5 shadow-card"
     >
+      {settings.fullName && (
+        <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border">
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+            <User className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">{settings.fullName}</p>
+            <p className="text-xs text-muted-foreground">Diyetin {dayNumber}. günü</p>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-sm text-muted-foreground">Diyetin {dayNumber}. günü</p>
+          {!settings.fullName && <p className="text-sm text-muted-foreground">Diyetin {dayNumber}. günü</p>}
           <p className="text-2xl font-bold text-foreground">{currentWeight} kg</p>
         </div>
         <div className="text-right">

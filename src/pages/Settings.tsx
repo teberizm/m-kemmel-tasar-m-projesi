@@ -3,10 +3,21 @@ import { useSettings } from '@/hooks/useHealthData';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DietPlanItem } from '@/types/health';
-import { ArrowLeft, Plus, Trash2, Link2, Copy, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft, Plus, Trash2, Link2, Copy, Check, Save, UtensilsCrossed } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+
+const DIET_CATEGORIES = [
+  'Kahvaltı',
+  'Ara Öğün (Kuşluk)',
+  'Öğle Yemeği',
+  'Ara Öğün (İkindi)',
+  'Akşam Yemeği',
+  'Gece Atıştırması',
+];
 
 function DietitianLinkButton() {
   const [copied, setCopied] = useState(false);
@@ -29,6 +40,7 @@ function DietitianLinkButton() {
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
   const navigate = useNavigate();
+  const [saved, setSaved] = useState(false);
   const [newPlanCategory, setNewPlanCategory] = useState('');
   const [newPlanItem, setNewPlanItem] = useState('');
   const [newPlanAmount, setNewPlanAmount] = useState('');
@@ -46,14 +58,29 @@ export default function Settings() {
     updateSettings({ dietPlan: settings.dietPlan.filter(i => i.id !== id) });
   };
 
+  const handleSave = () => {
+    setSaved(true);
+    toast.success('Ayarlar kaydedildi!');
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  // Group diet plan items by category
+  const groupedDietPlan = settings.dietPlan.reduce((acc, item) => {
+    if (!acc[item.category]) acc[item.category] = [];
+    acc[item.category].push(item);
+    return acc;
+  }, {} as Record<string, DietPlanItem[]>);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <div className="max-w-lg mx-auto p-4 space-y-6">
-        <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/')} className="p-2 rounded-lg bg-secondary">
-            <ArrowLeft className="w-5 h-5 text-foreground" />
-          </button>
-          <h1 className="text-xl font-bold text-foreground">Ayarlar</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/')} className="p-2 rounded-lg bg-secondary">
+              <ArrowLeft className="w-5 h-5 text-foreground" />
+            </button>
+            <h1 className="text-xl font-bold text-foreground">Ayarlar</h1>
+          </div>
         </div>
 
         {/* Name */}
@@ -127,34 +154,97 @@ export default function Settings() {
           })}
         </motion.div>
 
-        {/* Diet Plan */}
+        {/* Diet Plan - Improved */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="bg-card rounded-lg p-5 shadow-card space-y-4">
-          <h2 className="font-semibold text-foreground">Haftalık Diyet Planı</h2>
+          <div className="flex items-center gap-2">
+            <UtensilsCrossed className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-foreground">Haftalık Diyet Planı</h2>
+          </div>
 
-          {settings.dietPlan.length > 0 && (
-            <div className="space-y-2">
-              {settings.dietPlan.map(item => (
-                <div key={item.id} className="flex items-center justify-between bg-secondary rounded-lg p-3">
-                  <div>
-                    <span className="text-xs text-muted-foreground">{item.category}</span>
-                    <p className="text-sm font-medium text-foreground">{item.item} {item.amount && `(${item.amount})`}</p>
+          {/* Grouped display */}
+          {Object.keys(groupedDietPlan).length > 0 && (
+            <div className="space-y-4">
+              {DIET_CATEGORIES.filter(cat => groupedDietPlan[cat]).map(category => (
+                <div key={category}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <h3 className="text-sm font-medium text-primary">{category}</h3>
                   </div>
-                  <button onClick={() => removeDietItem(item.id)} className="p-1 hover:bg-destructive/10 rounded">
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </button>
+                  <div className="space-y-1.5 ml-4">
+                    <AnimatePresence>
+                      {groupedDietPlan[category].map(item => (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 10 }}
+                          className="flex items-center justify-between bg-secondary/50 rounded-lg px-3 py-2 group"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-foreground">{item.item}</span>
+                            {item.amount && (
+                              <span className="text-xs text-muted-foreground bg-background px-2 py-0.5 rounded-full">{item.amount}</span>
+                            )}
+                          </div>
+                          <button onClick={() => removeDietItem(item.id)} className="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded">
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                          </button>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
                 </div>
               ))}
+              {/* Items with non-standard categories */}
+              {Object.entries(groupedDietPlan)
+                .filter(([cat]) => !DIET_CATEGORIES.includes(cat))
+                .map(([category, items]) => (
+                  <div key={category}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+                      <h3 className="text-sm font-medium text-muted-foreground">{category}</h3>
+                    </div>
+                    <div className="space-y-1.5 ml-4">
+                      {items.map(item => (
+                        <div key={item.id} className="flex items-center justify-between bg-secondary/50 rounded-lg px-3 py-2 group">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-foreground">{item.item}</span>
+                            {item.amount && (
+                              <span className="text-xs text-muted-foreground bg-background px-2 py-0.5 rounded-full">{item.amount}</span>
+                            )}
+                          </div>
+                          <button onClick={() => removeDietItem(item.id)} className="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 rounded">
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-2">
-            <Input placeholder="Kategori" value={newPlanCategory} onChange={e => setNewPlanCategory(e.target.value)} />
-            <Input placeholder="Yiyecek" value={newPlanItem} onChange={e => setNewPlanItem(e.target.value)} />
-            <Input placeholder="Miktar" value={newPlanAmount} onChange={e => setNewPlanAmount(e.target.value)} />
+          {/* Add new item */}
+          <div className="border-t border-border pt-4 space-y-3">
+            <p className="text-xs font-medium text-muted-foreground">Yeni Yiyecek Ekle</p>
+            <Select value={newPlanCategory} onValueChange={setNewPlanCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="Öğün seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                {DIET_CATEGORIES.map(cat => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="grid grid-cols-2 gap-2">
+              <Input placeholder="Yiyecek adı" value={newPlanItem} onChange={e => setNewPlanItem(e.target.value)} />
+              <Input placeholder="Miktar (ör: 100g)" value={newPlanAmount} onChange={e => setNewPlanAmount(e.target.value)} />
+            </div>
+            <Button onClick={addDietItem} variant="outline" className="w-full gap-2" disabled={!newPlanCategory || !newPlanItem}>
+              <Plus className="w-4 h-4" /> Ekle
+            </Button>
           </div>
-          <Button onClick={addDietItem} variant="outline" className="w-full gap-2">
-            <Plus className="w-4 h-4" /> Ekle
-          </Button>
         </motion.div>
 
         {/* Dietitian Link */}
@@ -166,6 +256,16 @@ export default function Settings() {
           <p className="text-xs text-muted-foreground">Bu linki diyetisyeninize gönderin. Kayıtlarınızı görebilir ve günlük yorum bırakabilir.</p>
           <DietitianLinkButton />
         </motion.div>
+      </div>
+
+      {/* Sticky Save Button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-lg border-t border-border p-4 z-50">
+        <div className="max-w-lg mx-auto">
+          <Button onClick={handleSave} className="w-full gap-2 h-12 text-base font-semibold">
+            {saved ? <Check className="w-5 h-5" /> : <Save className="w-5 h-5" />}
+            {saved ? 'Kaydedildi!' : 'Kaydet'}
+          </Button>
+        </div>
       </div>
     </div>
   );
