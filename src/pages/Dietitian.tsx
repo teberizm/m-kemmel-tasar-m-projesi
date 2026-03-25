@@ -170,6 +170,11 @@ export default function Dietitian() {
   const [expandedPhoto, setExpandedPhoto] = useState<string | null>(null);
   const dateStr = format(date, 'yyyy-MM-dd');
 
+  const weightChartData = useMemo(() =>
+    getAllWeights().map(w => ({ date: format(new Date(w.timestamp), 'dd/MM'), kg: w.value })),
+    [dateStr]
+  );
+
   const entries: TimelineEntry[] = loadFromStorage(`health_${dateStr}_entries`, []);
   const settings: UserSettings = loadFromStorage('health_settings', DEFAULT_SETTINGS);
 
