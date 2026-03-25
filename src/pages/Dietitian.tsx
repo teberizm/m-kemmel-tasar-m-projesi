@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { format, addDays, subDays } from 'date-fns';
+import { format, addDays, subDays, isBefore, startOfDay, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X, ZoomIn, TrendingDown } from 'lucide-react';
@@ -243,7 +243,7 @@ export default function Dietitian() {
       <div className="max-w-6xl mx-auto p-6">
         {/* Date Navigator */}
         <div className="flex items-center justify-center gap-4 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setDate(d => subDays(d, 1))}>
+          <Button variant="ghost" size="icon" onClick={() => setDate(d => subDays(d, 1))} disabled={isBefore(subDays(startOfDay(date), 1), startOfDay(parseISO(settings.dietStartDate)))}>
             <ChevronLeft className="w-5 h-5" />
           </Button>
           <div className="flex items-center gap-2 bg-card px-5 py-2.5 rounded-xl shadow-card">
