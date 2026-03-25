@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DietPlanItem } from '@/types/health';
-import { ArrowLeft, Plus, Trash2, Link2, Copy, Check, Save, UtensilsCrossed } from 'lucide-react';
+import { DietPlanItem, Supplement } from '@/types/health';
+import { ArrowLeft, Plus, Trash2, Link2, Copy, Check, Save, UtensilsCrossed, Pill } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -44,6 +44,8 @@ export default function Settings() {
   const [newPlanCategory, setNewPlanCategory] = useState('');
   const [newPlanItem, setNewPlanItem] = useState('');
   const [newPlanAmount, setNewPlanAmount] = useState('');
+  const [newSupName, setNewSupName] = useState('');
+  const [newSupCount, setNewSupCount] = useState('1');
 
   const addDietItem = () => {
     if (!newPlanCategory || !newPlanItem) return;
@@ -56,6 +58,18 @@ export default function Settings() {
 
   const removeDietItem = (id: string) => {
     updateSettings({ dietPlan: settings.dietPlan.filter(i => i.id !== id) });
+  };
+
+  const addSupplement = () => {
+    if (!newSupName.trim()) return;
+    const sup: Supplement = { id: Math.random().toString(36).slice(2), name: newSupName.trim(), dailyCount: Math.max(1, Number(newSupCount) || 1) };
+    updateSettings({ supplements: [...(settings.supplements || []), sup] });
+    setNewSupName('');
+    setNewSupCount('1');
+  };
+
+  const removeSupplement = (id: string) => {
+    updateSettings({ supplements: (settings.supplements || []).filter(s => s.id !== id) });
   };
 
   const handleSave = () => {
