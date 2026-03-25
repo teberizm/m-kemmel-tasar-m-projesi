@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { format, addDays, subDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X, ZoomIn } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -56,17 +57,22 @@ function StatCard({ icon: Icon, bg, iconColor, title, value, sub }: { icon: any;
   );
 }
 
-function EntryRow({ entry }: { entry: TimelineEntry }) {
+function EntryRow({ entry, onPhotoClick }: { entry: TimelineEntry; onPhotoClick?: (src: string) => void }) {
   switch (entry.type) {
     case 'meal': {
       const e = entry as MealEntry;
       return (
-        <div className="flex items-center gap-4 py-3 border-b border-border last:border-0">
+        <div className="flex items-start gap-4 py-4 border-b border-border last:border-0">
           {e.photo ? (
-            <img src={e.photo} alt="" className="w-14 h-14 rounded-xl object-cover" />
+            <div className="relative group cursor-pointer" onClick={() => onPhotoClick?.(e.photo!)}>
+              <img src={e.photo} alt="" className="w-20 h-20 rounded-xl object-cover" />
+              <div className="absolute inset-0 bg-black/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <ZoomIn className="w-5 h-5 text-white" />
+              </div>
+            </div>
           ) : (
-            <div className="w-14 h-14 rounded-xl bg-meal-light flex items-center justify-center">
-              <Camera className="w-6 h-6 text-meal" />
+            <div className="w-20 h-20 rounded-xl bg-meal-light flex items-center justify-center">
+              <Camera className="w-7 h-7 text-meal" />
             </div>
           )}
           <div className="flex-1">
@@ -241,8 +247,8 @@ export default function Dietitian() {
           </Button>
         </div>
 
-        {/* Desktop: 3-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Desktop: 3-column layout — middle column wider */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr_1fr] gap-6">
           {/* Summary Stats */}
           <div className="space-y-4">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Günlük Özet</h2>
@@ -271,9 +277,9 @@ export default function Dietitian() {
             </div>
           </div>
 
-          {/* Timeline */}
+          {/* Öğün Çizelgesi */}
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Zaman Çizelgesi</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Öğün Çizelgesi</h2>
             {entries.length === 0 ? (
               <div className="bg-card rounded-xl p-8 shadow-card text-center">
                 <p className="text-muted-foreground text-sm">Bu gün için kayıt yok</p>
@@ -281,7 +287,7 @@ export default function Dietitian() {
             ) : (
               <div className="bg-card rounded-xl px-5 shadow-card">
                 {entries.map(entry => (
-                  <EntryRow key={entry.id} entry={entry} />
+                  <EntryRow key={entry.id} entry={entry} onPhotoClick={(src) => setExpandedPhoto(src)} />
                 ))}
               </div>
             )}
