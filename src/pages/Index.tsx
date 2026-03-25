@@ -8,6 +8,7 @@ import DayNavigator from '@/components/DayNavigator';
 import Timeline from '@/components/Timeline';
 import EntryModals from '@/components/EntryModals';
 import BottomNav from '@/components/BottomNav';
+import DietitianNotes from '@/components/DietitianNotes';
 
 type ModalType = 'meal' | 'water' | 'sleep' | 'workout' | 'weight' | null;
 
@@ -32,6 +33,7 @@ export default function Index() {
           totalCalories={totalCaloriesBurned}
           meals={meals}
         />
+        <DietitianNotes dateStr={dateStr} />
         <div>
           <h2 className="text-lg font-bold text-foreground mb-3">Günlük Zaman Çizelgesi</h2>
           <Timeline entries={entries} onRemove={removeEntry} />
@@ -57,6 +59,7 @@ export default function Index() {
             totalCalories={totalCaloriesBurned}
             meals={meals}
           />
+          <DietitianNotes dateStr={dateStr} />
         </div>
       </div>
 
