@@ -83,11 +83,11 @@ function EntryRow({ entry, onPhotoClick }: { entry: TimelineEntry; onPhotoClick?
                 <span className="text-xs text-status-late">{e.delayMinutes}dk geç</span>
               )}
             </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="w-3 h-3" />
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <Clock className="w-3.5 h-3.5" />
               {format(new Date(e.timestamp), 'HH:mm')}
             </div>
-            {e.note && <p className="text-xs text-muted-foreground mt-0.5">{e.note}</p>}
+            {e.note && <p className="text-sm text-foreground mt-1 leading-relaxed">{e.note}</p>}
           </div>
         </div>
       );
@@ -220,8 +220,8 @@ export default function Dietitian() {
               <UtensilsCrossed className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">Diyetisyen Paneli</h1>
-              <p className="text-xs text-muted-foreground">Hasta takip görünümü</p>
+              <h1 className="text-lg font-bold text-foreground">{settings.fullName || 'İsimsiz Hasta'}</h1>
+              <p className="text-xs text-muted-foreground">Diyet Takip Programı</p>
             </div>
           </div>
           <div className="text-right">
