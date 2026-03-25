@@ -1,8 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { format, addDays, subDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X, ZoomIn } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X, ZoomIn, TrendingDown } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { getAllWeights } from '@/hooks/useHealthData';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
