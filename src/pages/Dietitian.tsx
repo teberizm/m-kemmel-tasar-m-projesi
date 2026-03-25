@@ -291,6 +291,27 @@ export default function Dietitian() {
                 ))}
               </div>
             </div>
+
+            {/* Weight Chart */}
+            <div className="bg-card rounded-xl p-5 shadow-card">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingDown className="w-4 h-4 text-weight" />
+                <p className="text-sm font-semibold text-foreground">Kilo Grafiği</p>
+              </div>
+              {weightChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={180}>
+                  <LineChart data={weightChartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="date" fontSize={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis fontSize={10} stroke="hsl(var(--muted-foreground))" domain={['dataMin - 2', 'dataMax + 2']} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="kg" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-center text-muted-foreground text-sm py-6">Henüz kilo verisi yok</p>
+              )}
+            </div>
           </div>
 
           {/* Öğün Çizelgesi */}
