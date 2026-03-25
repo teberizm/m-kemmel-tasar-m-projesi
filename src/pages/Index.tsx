@@ -48,7 +48,7 @@ export default function Index() {
       <div className="hidden lg:flex max-w-6xl mx-auto p-6 gap-6">
         <div className="flex-1 space-y-5">
           <TopSummary settings={settings} latestWeight={latestWeight} />
-          <DayNavigator date={date} onChange={setDate} />
+          <DayNavigator date={date} onChange={setDate} minDate={settings.dietStartDate} />
           <QuickActions onAction={setModal} />
           <div>
             <h2 className="text-lg font-bold text-foreground mb-3">Günlük Zaman Çizelgesi</h2>
