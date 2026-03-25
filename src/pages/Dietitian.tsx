@@ -269,49 +269,6 @@ export default function Dietitian() {
 
             {/* Mood & Hunger */}
             <MoodHungerRating dateStr={dateStr} readOnly />
-
-            {/* Supplements */}
-            <SupplementTracker supplements={settings.supplements || []} dateStr={dateStr} readOnly />
-
-            {/* Meal Status */}
-            <div className="bg-card rounded-xl p-5 shadow-card">
-              <div className="flex items-center gap-2 mb-3">
-                <UtensilsCrossed className="w-4 h-4 text-meal" />
-                <p className="text-sm font-semibold text-foreground">Öğün Durumu</p>
-              </div>
-              <div className="space-y-2">
-                {mealStatuses.map(ms => (
-                  <div key={ms.type} className="flex items-center gap-2">
-                    <MealStatusIcon status={ms.status} />
-                    <span className="text-sm text-foreground">{ms.label}</span>
-                    <span className="text-xs text-muted-foreground ml-auto">
-                      {ms.status === 'ontime' ? 'Zamanında' : ms.status === 'late' ? 'Geç' : 'Yok'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Weight Chart */}
-            <div className="bg-card rounded-xl p-5 shadow-card">
-              <div className="flex items-center gap-2 mb-3">
-                <TrendingDown className="w-4 h-4 text-weight" />
-                <p className="text-sm font-semibold text-foreground">Kilo Grafiği</p>
-              </div>
-              {weightChartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={180}>
-                  <LineChart data={weightChartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="date" fontSize={10} stroke="hsl(var(--muted-foreground))" />
-                    <YAxis fontSize={10} stroke="hsl(var(--muted-foreground))" domain={['dataMin - 2', 'dataMax + 2']} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="kg" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              ) : (
-                <p className="text-center text-muted-foreground text-sm py-6">Henüz kilo verisi yok</p>
-              )}
-            </div>
           </div>
 
           {/* Öğün Çizelgesi */}
@@ -330,7 +287,7 @@ export default function Dietitian() {
             )}
           </div>
 
-          {/* Dietitian Comments */}
+          {/* Dietitian Comments + Supplements + Meal Status + Weight Chart */}
           <div className="space-y-4">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Diyetisyen Yorumları</h2>
             <div className="bg-card rounded-xl p-5 shadow-card space-y-4">
@@ -379,6 +336,49 @@ export default function Dietitian() {
 
               {dayComments.length === 0 && (
                 <p className="text-xs text-muted-foreground text-center py-2">Bu gün için henüz yorum yok</p>
+              )}
+            </div>
+
+            {/* Supplements */}
+            <SupplementTracker supplements={settings.supplements || []} dateStr={dateStr} readOnly />
+
+            {/* Meal Status */}
+            <div className="bg-card rounded-xl p-5 shadow-card">
+              <div className="flex items-center gap-2 mb-3">
+                <UtensilsCrossed className="w-4 h-4 text-meal" />
+                <p className="text-sm font-semibold text-foreground">Öğün Durumu</p>
+              </div>
+              <div className="space-y-2">
+                {mealStatuses.map(ms => (
+                  <div key={ms.type} className="flex items-center gap-2">
+                    <MealStatusIcon status={ms.status} />
+                    <span className="text-sm text-foreground">{ms.label}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {ms.status === 'ontime' ? 'Zamanında' : ms.status === 'late' ? 'Geç' : 'Yok'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Weight Chart */}
+            <div className="bg-card rounded-xl p-5 shadow-card">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingDown className="w-4 h-4 text-weight" />
+                <p className="text-sm font-semibold text-foreground">Kilo Grafiği</p>
+              </div>
+              {weightChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={180}>
+                  <LineChart data={weightChartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="date" fontSize={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis fontSize={10} stroke="hsl(var(--muted-foreground))" domain={['dataMin - 2', 'dataMax + 2']} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="kg" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-center text-muted-foreground text-sm py-6">Henüz kilo verisi yok</p>
               )}
             </div>
           </div>
