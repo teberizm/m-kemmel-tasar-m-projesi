@@ -163,6 +163,7 @@ function EntryRow({ entry, onPhotoClick }: { entry: TimelineEntry; onPhotoClick?
 
 export default function Dietitian() {
   const [date, setDate] = useState(new Date());
+  const [expandedPhoto, setExpandedPhoto] = useState<string | null>(null);
   const dateStr = format(date, 'yyyy-MM-dd');
 
   const entries: TimelineEntry[] = loadFromStorage(`health_${dateStr}_entries`, []);
@@ -347,6 +348,15 @@ export default function Dietitian() {
           </div>
         </div>
       </div>
+
+      {/* Photo expand dialog */}
+      <Dialog open={!!expandedPhoto} onOpenChange={() => setExpandedPhoto(null)}>
+        <DialogContent className="max-w-2xl p-2 bg-black/90 border-none">
+          {expandedPhoto && (
+            <img src={expandedPhoto} alt="Öğün fotoğrafı" className="w-full h-auto rounded-lg" />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
