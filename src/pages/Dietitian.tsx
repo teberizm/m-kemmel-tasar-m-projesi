@@ -1,8 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { format, addDays, subDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X, ZoomIn } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, MessageSquare, Send, Droplets, Moon, Dumbbell, UtensilsCrossed, Camera, Scale, Clock, Check, AlertTriangle, X, ZoomIn, TrendingDown } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { getAllWeights } from '@/hooks/useHealthData';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -168,6 +170,11 @@ export default function Dietitian() {
   const [expandedPhoto, setExpandedPhoto] = useState<string | null>(null);
   const dateStr = format(date, 'yyyy-MM-dd');
 
+  const weightChartData = useMemo(() =>
+    getAllWeights().map(w => ({ date: format(new Date(w.timestamp), 'dd/MM'), kg: w.value })),
+    [dateStr]
+  );
+
   const entries: TimelineEntry[] = loadFromStorage(`health_${dateStr}_entries`, []);
   const settings: UserSettings = loadFromStorage('health_settings', DEFAULT_SETTINGS);
 
@@ -283,6 +290,27 @@ export default function Dietitian() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Weight Chart */}
+            <div className="bg-card rounded-xl p-5 shadow-card">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingDown className="w-4 h-4 text-weight" />
+                <p className="text-sm font-semibold text-foreground">Kilo Grafiği</p>
+              </div>
+              {weightChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={180}>
+                  <LineChart data={weightChartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="date" fontSize={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis fontSize={10} stroke="hsl(var(--muted-foreground))" domain={['dataMin - 2', 'dataMax + 2']} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="kg" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-center text-muted-foreground text-sm py-6">Henüz kilo verisi yok</p>
+              )}
             </div>
           </div>
 
