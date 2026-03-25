@@ -26,7 +26,7 @@ export default function Index() {
       {/* Mobile layout */}
       <div className="lg:hidden max-w-lg mx-auto p-4 space-y-5">
         <TopSummary settings={settings} latestWeight={latestWeight} />
-        <DayNavigator date={date} onChange={setDate} />
+        <DayNavigator date={date} onChange={setDate} minDate={settings.dietStartDate} />
         <QuickActions onAction={setModal} />
         <MoodHungerRating dateStr={dateStr} />
         <SupplementTracker supplements={settings.supplements} dateStr={dateStr} />
